@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Test</title>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    </head>
+    <style>
+        body {
+            margin: 0;
+            /* cursor: none; */
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .control-button {
+            outline: none;
+            background: transparent;
+            color: white;
+            height: 30px;
+            width: 30px;
+            border: none;
+            margin-right: 5px;
+            border-radius: 5px;
+        }
+        .control-button:hover {
+            background: hsla(0 0% 100% / .03);
+        }
+    </style>
+    <body>
+        <button id="focustaker" style="z-index: -1; background-color: transparent; border: transparent; position: absolute; outline: none;">
+
+        </button>
+        <script src="three.js"></script>
+        <script src="CSS3DRenderer.js"></script>
+        <script src="HTMLMaker.js"></script>
+        <script src="main.js"></script>
+        <div id="container">
+
+        </div>
+        <div id="blocker">
+            
+        </div>
+    </body>
+</html>
