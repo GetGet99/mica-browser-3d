@@ -69,7 +69,7 @@ The communicated messages are
 
 Although it seems that these can be done in JavaScript alone, the complication starts when there is IFrame, making these keys unable to be appropriately handled. That is why it is instead handled on the app level and sent as a message.
 
-NOTE: This project technically does not require Node.js. However, Node.js is used to make the production easier due to better Three.js typing.
+NOTE: This project technically does not require Node.js. However, Node.js is used to make the development easier due to better Three.js typing.
 
 ## Future
 
