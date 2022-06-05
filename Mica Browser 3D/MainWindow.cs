@@ -23,6 +23,7 @@ using Path = System.IO.Path;
 using System.IO;
 using Timer = System.Windows.Forms.Timer;
 using WinFormsCursor = System.Windows.Forms.Cursor;
+using WinFormsControl = System.Windows.Forms.Control;
 using WV2::Microsoft.Web.WebView2.Core;
 using System.Net.Http;
 
@@ -63,7 +64,7 @@ namespace MicaVSCode
             WebView2.CoreWebView2InitializationCompleted += (_, _) =>
             {
                 WebView2.CoreWebView2.SetVirtualHostNameToFolderMapping("local.3d.co", @".\web", CoreWebView2HostResourceAccessKind.Allow);
-                WebView2.Source = new Uri("https://local.3d.co/index.html");
+                WebView2.Source = new Uri("http://local.3d.co/index.html");
                 TitleBarContainer.Visibility = Visibility.Collapsed;
                 WebView2.CoreWebView2.FrameCreated += (_, e) =>
                 {
@@ -95,8 +96,11 @@ namespace MicaVSCode
                                 keyStr += "d ";
                             if (Keyboard.IsKeyDown(Key.Space))
                                 keyStr += "space ";
-                            if (Keyboard.IsKeyDown(Key.LeftShift))
+                            if (Keyboard.IsKeyDown(Key.LeftShift) | Keyboard.IsKeyDown(Key.RightAlt))
                                 keyStr += "shift ";
+                            if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+                                keyStr += "alt ";
+
                             var pos = WinFormsCursor.Position;
                             var centerX = WebView2.ActualWidth / 2;
                             var centerY = WebView2.ActualHeight / 2 + 30;
@@ -118,13 +122,15 @@ namespace MicaVSCode
     ""cursorLock"": {(MouseLock ? "true" : "false")},
     ""mouse"": {{
         ""dX"": {dx},
-        ""dY"": {dy}
+        ""dY"": {dy},
+        ""LeftDown"": {(WinFormsControl.MouseButtons.HasFlag(MouseButtons.Left) ? "true" : "false")},
+        ""RightDown"": {(WinFormsControl.MouseButtons.HasFlag(MouseButtons.Right) ? "true" : "false")}
     }}
 }}".Trim();
                     WebView2.CoreWebView2.PostWebMessageAsJson(json);
                     WebView2.CoreWebView2.NavigationStarting += (o, e) =>
                     {
-                        if (e.Uri != "https://local.3d.co/index.html")
+                        if (e.Uri != "http://local.3d.co/index.html")
                         {
                             e.Cancel = true;
                             WebView2.CoreWebView2.ExecuteScriptAsync($"CreateIFrameInFront(\"{e.Uri}\")");

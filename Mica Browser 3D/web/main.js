@@ -1,5 +1,10 @@
 //@ts-check
+
 const scence = new THREE.Scene();
+const SimulatedScence = new THREE.Scene();
+const CenterSimulator = new THREE.Group();
+const OrbidSimulator = new THREE.Group();
+const OrbidObjectSimulator = new THREE.Group();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
 const focustaker = document.getElementById('focustaker')
 const renderer = new CSS3DRenderer();
@@ -64,9 +69,101 @@ function IFrame( src, x, y, z, ry ) {
                         },
                         Children: [
                             new DIVElement({
-                                Apply: function(dummy) {
-                                    dummy.style.flexGrow = '1';
-                                    dummy.style.fontFamily = '';
+                                Apply: function(dragable) {
+                                    dragable.style.flexGrow = '1';
+                                    dragable.style.fontFamily = '';
+                                    dragable.style.height = '100%';
+                                    let translationVector = new THREE.Vector3()
+                                    
+                                    // const TranslateXAxis = new THREE.Vector3( 0, 1, 0 );
+                                    // const TranslateYAxis = new THREE.Vector3( 0, 0, 1 );
+                                    // const TranslateCloserAxis = new THREE.Vector3( 1, 0, 0 );
+                                    let distance = 0
+                                    let ismousedown = false
+                                    dragable.onmousedown = function (ev) {
+                                        const cameraquaternion = camera.getWorldQuaternion(new THREE.Quaternion())
+                                        const cameradirection = camera.getWorldDirection(new THREE.Vector3())
+                                        const cameraposition = camera.getWorldPosition(new THREE.Vector3())
+                                        SimulatedScence.attach(CenterSimulator)
+                                        CenterSimulator.position.copy(cameraposition)
+                                        CenterSimulator.quaternion.copy(cameraquaternion)
+                                        const ray = new THREE.Ray()
+                                        // const TranslateRightVector = object.getWorldDirection(new THREE.Vector3());
+                                        // const TranslateDownVector = object.getWorldDirection(new THREE.Vector3());
+                                        // const TranslateCloserVector = object.getWorldDirection(new THREE.Vector3());
+                                        // const degree90 = Math.PI / 2; // 90 degree
+
+                                        // TranslateRightVector.applyAxisAngle(TranslateXAxis, degree90);
+                                        // TranslateCloserVector.applyAxisAngle(TranslateYAxis, degree90);
+                                        // TranslateDownVector.applyAxisAngle(TranslateCloserAxis, degree90);
+                                        // const rect = ele.getBoundingClientRect()
+                                        // const distanceXfromhalf = ev.clientX
+                                        // const distanceYfromhalf = ev.clientY
+                                        // translationVector.set(0, 0, 0)
+                                        // TranslateRightVector.multiplyScalar(distanceXfromhalf)
+                                        // TranslateDownVector.multiplyScalar(distanceYfromhalf)
+                                        // translationVector.add(TranslateRightVector).add(TranslateDownVector)
+                                        // const Point = object.position.clone()
+                                        // Point.add(translationVector)
+
+                                        // distance = camera.getWorldPosition(new THREE.Vector3()).distanceTo(Point)
+                                        // TranslateCloserVector.multiplyScalar(10)
+                                        // const newvec = object.position.add(TranslateDownVector)
+                                        
+                                        // const vector = new THREE.Vector3( ( ev.clientX / window.innerWidth ) * 2 - 1, 0.5, - ( ev.clientY / window.innerHeight ) * 2 + 1 );
+                                        // vector.sub(cameraposition).normalize();
+                                        ray.direction.copy(cameradirection);
+                                        ray.origin.copy(cameraposition);
+                                        const intersect = ray.intersectPlane(new THREE.Plane().setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1).applyQuaternion(object.quaternion), object.position), new THREE.Vector3())
+                                        if (intersect != null) {
+                                            SimulatedScence.attach(OrbidSimulator)
+                                            OrbidSimulator.position.copy(intersect)
+                                            OrbidSimulator.quaternion.copy(object.quaternion)
+                                            CenterSimulator.attach(OrbidSimulator)
+                                            SimulatedScence.attach(OrbidObjectSimulator)
+                                            OrbidObjectSimulator.position.copy(object.position)
+                                            OrbidObjectSimulator.quaternion.copy(object.quaternion)
+                                            OrbidSimulator.attach(OrbidObjectSimulator)
+                                            // distance = intersect.distanceTo(cameraposition)
+                                            // translationVector = ray.origin.clone().add(ray.direction.clone().multiplyScalar(distance)).sub(object.position)
+                                            let intervalId = setInterval(function () {
+                                                if (!leftbtndown)
+                                                    clearInterval(intervalId)
+                                                const Position = camera.getWorldPosition(new THREE.Vector3())
+                                                const Quaternion = camera.getWorldQuaternion(new THREE.Quaternion())
+                                                CenterSimulator.position.copy(Position)
+                                                CenterSimulator.quaternion.copy(Quaternion)
+                                                object.position.copy(OrbidObjectSimulator.getWorldPosition(new THREE.Vector3()))
+                                                const euler = new THREE.Euler().setFromQuaternion(OrbidObjectSimulator.getWorldQuaternion(new THREE.Quaternion()))
+                                                if (keyPressing.includes('alt')) {
+                                                    // const possibleangles = [-2 * Math.PI,, 2 * Math.PI, -3/4 * Math.PI, 3/4 * Math.PI, -1/2 * Math.PI, 1/2 * Math.PI, -Math.PI, Math.PI, -Math.PI]
+                                                    // if (euler.x < Math.PI)
+                                                } else
+                                                    euler.x = object.rotation.x
+                                                euler.z = object.rotation.z
+                                                object.rotation.copy(euler)
+                                            }, 20)
+                                            
+                                        }
+                                        
+                                    }
+                                    dragable.onwheel = function (ev) {
+                                        let direction;
+                                        if (ev.ctrlKey) {
+                                            direction = camera.getWorldDirection(new THREE.Vector3())
+                                            direction.multiplyScalar(-1)
+                                        }
+                                        else
+                                            direction = object.getWorldDirection(new THREE.Vector3())
+                                        if (!ev.shiftKey) {
+                                            direction.y = 0
+                                            direction.normalize()
+                                        }
+                                        direction.multiplyScalar(ev.deltaY)
+                                        if (ev.deltaMode == WheelEvent.DOM_DELTA_LINE)
+                                            direction.multiplyScalar(5)
+                                        object.position.add(direction)
+                                    }
                                 }
                             }),
                             new ButtonElement({
@@ -128,6 +225,7 @@ function update() {
 
 }
 let left = false, forward = false, right = false, back = false;
+let leftbtndown = false, rightbtndown = false;
 document.onkeydown = BlockEventIfCursorLock;
 /**
  * @type {string[]}
@@ -139,7 +237,9 @@ let keyPressing = [];
  *      cursorLock : boolean,
  *      mouse : {
  *          dX : Number,
- *          dY : Number
+ *          dY : Number,
+ *          LeftDown : boolean,
+ *          RightDown : boolean
  *      }
  * }}} e
  */
@@ -152,6 +252,8 @@ function MessageRecieved(e) {
             
         })
     }
+    leftbtndown = data.mouse.LeftDown
+    rightbtndown = data.mouse.RightDown
     let rotX = rotationMouseXDegree + data.mouse.dX * MouseSensitiveX
     if (rotX > 360) rotX -= 360
     if (rotX < 0) rotX = 360 - rotX
