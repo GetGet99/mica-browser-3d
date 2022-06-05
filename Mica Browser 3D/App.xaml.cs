@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using MicaWindow;
 using PInvoke;
 using Properties;
-using static MicaVSCode.HwndHostEx;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
 
