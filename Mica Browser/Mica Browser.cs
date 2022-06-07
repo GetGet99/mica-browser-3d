@@ -145,7 +145,16 @@ public partial class MicaBrowser : MicaWindow.MicaWindow
 
         WebView2.CoreWebView2InitializationCompleted += delegate
         {
+            
             var CoreWebView2 = WebView2.CoreWebView2;
+            string OriginalUserAgent = CoreWebView2.Settings.UserAgent;
+            string GoogleSignInUserAgent = OriginalUserAgent.Substring(0, OriginalUserAgent.IndexOf("Edg/"))
+            .Replace("Mozilla/5.0", "Mozilla/4.0");
+            CoreWebView2.FrameNavigationStarting += (_, e) =>
+            {
+                var isGoogleLogin = new Uri(e.Uri).Host.Contains("accounts.google.com");
+                CoreWebView2.Settings.UserAgent = isGoogleLogin ? GoogleSignInUserAgent : OriginalUserAgent;
+            };
             CoreWebView2.NewWindowRequested += (_, e) =>
             {
                 if (Control.ModifierKeys.HasFlag(Keys.Shift)) return;

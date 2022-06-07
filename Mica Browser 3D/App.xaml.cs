@@ -23,6 +23,7 @@ namespace MicaVSCode
     {
         public App()
         {
+            Environment.SetEnvironmentVariable("WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", "--site-per-process –disable-features=SameSiteByDefaultCookies");
             MainWindow = new MainWindow();
             MainWindow.Show();
         }

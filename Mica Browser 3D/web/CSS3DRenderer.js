@@ -83,6 +83,9 @@ class CSS3DRenderer {
 			},
 			objects: new WeakMap()
 		};
+		/**
+		 * @type {HTMLElement}
+		 */
 		const domElement = parameters.element !== undefined ? parameters.element : document.createElement( 'div' );
 		domElement.style.overflow = 'hidden';
 		this.domElement = domElement;
@@ -99,7 +102,11 @@ class CSS3DRenderer {
 			};
 
 		};
-
+		/**
+		 * 
+		 * @param {THREE.Scene} scene 
+		 * @param {THREE.PerspectiveCamera} camera 
+		 */
 		this.render = function ( scene, camera ) {
 
 			const fov = camera.projectionMatrix.elements[ 5 ] * _heightHalf;

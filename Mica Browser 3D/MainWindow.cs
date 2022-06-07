@@ -65,6 +65,7 @@ namespace MicaVSCode
             {
                 WebView2.CoreWebView2.SetVirtualHostNameToFolderMapping("local.3d.co", @".\web", CoreWebView2HostResourceAccessKind.Allow);
                 WebView2.Source = new Uri("http://local.3d.co/index.html");
+                //WebView2.Source = new Uri("edge://flags");
                 TitleBarContainer.Visibility = Visibility.Collapsed;
                 WebView2.CoreWebView2.FrameCreated += (_, e) =>
                 {
@@ -132,8 +133,8 @@ namespace MicaVSCode
                     {
                         if (e.Uri != "http://local.3d.co/index.html")
                         {
-                            e.Cancel = true;
-                            WebView2.CoreWebView2.ExecuteScriptAsync($"CreateIFrameInFront(\"{e.Uri}\")");
+                            //e.Cancel = true;
+                            //WebView2.CoreWebView2.ExecuteScriptAsync($"CreateIFrameInFront(\"{e.Uri}\")");
                         }
                     };
                 };
@@ -150,6 +151,9 @@ namespace MicaVSCode
                         break;
                     case Key.F1:
                         WebView2.CoreWebView2.ExecuteScriptAsync("CreateIFrameInFront(\"https://google.com\")");
+                        break;
+                    case Key.F2:
+                        WebView2.CoreWebView2.Navigate("edge://settings/privacy");
                         break;
                 }
             };
