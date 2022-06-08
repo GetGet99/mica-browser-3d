@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Mica Browser 3D WinUI 3 (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "Mica Browser 3D WinUI 3 (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
