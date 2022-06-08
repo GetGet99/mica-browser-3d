@@ -169,7 +169,13 @@ class CSS3DRenderer {
 			return 'translate(-50%,-50%)' + matrix3d;
 
 		}
-
+		/**
+		 * 
+		 * @param {CSS3DObject} object 
+		 * @param {THREE.Scene} scene 
+		 * @param {THREE.Camera} camera 
+		 * @param {string} cameraCSSMatrix 
+		 */
 		function renderObject( object, scene, camera, cameraCSSMatrix ) {
 
 			if ( object.isCSS3DObject ) {
